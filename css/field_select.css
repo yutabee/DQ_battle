@@ -1,0 +1,49 @@
+.game_window {
+    width: 800px;
+    height: 600px;
+    background-color: black;
+    color: white;
+}
+
+.title-wrapper h1 {
+    font-weight: normal;
+    text-align: center;
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+.field_img_wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.field_img_container {
+    width: 30%;
+    margin: 0px 5px;
+}
+
+.field_img_container img {
+    width: 100%;
+    border-radius: 30px;
+}
+
+.field_img_container:hover {
+    position: relative;
+    cursor: pointer;
+    animation: scope 1s;
+    transform: scale(1.2);
+    transition-duration: 0.5s;
+}
+
+.field_img_container p {
+    text-align: center;
+    position: relative;
+    opacity: 0.7;
+    top: -120px;
+}
+
+.BGM:hover {
+    cursor: pointer;
+    background-color: blue;
+}

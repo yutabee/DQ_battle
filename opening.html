@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/opening.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="js/main.js"></script>
+    <title>ドラクエオープニング</title>
+</head>
+
+<body onload="OP_BGM.play()">
+    <div class="game_window">
+        <div class="logo_fade">
+            <img src="img/DQ_LOGO.png" alt="オープニングロゴ">
+        </div>
+        <p>ゲームを開始しますか？</p>
+        <p onclick="window_change()">
+            <span class="btn">はい</span>
+        </p>
+        <div class="slime_image"><img src="img/slime.png"></div>
+    </div>
+
+    <a class="op_play" onclick=" OP_BGM.play()">play</a>
+    <script>
+
+        function window_change() {
+            window.location.href = "field_select.html";
+        }
+        const OP_BGM = new Audio('BGM/DQVOP.mp3');
+
+
+    </script>
+
+
+</body>
+
+</html>

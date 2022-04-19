@@ -1,0 +1,156 @@
+.game_window {
+    background-image: url(../img/hikaruyuka.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 800px;
+    height: 600px;
+    background-color: black;
+    color: white;
+}
+
+.enemy_status_container {
+    border: 3px solid white;
+    border-radius: 6px;
+    margin: 0.5em;
+    padding: 1em;
+    background-color: black;
+    width: 150px;
+}
+
+.command {
+    width: 150px;
+    border: 3px solid white;
+    border-radius: 6px;
+    margin: 0.5em;
+    padding: 1em;
+    float: left;
+    background-color: black;
+}
+
+.game_enemy {
+    display: flex;
+    margin: 0.5em;
+    padding: 1em;
+}
+
+#message {
+    width: 300px;
+    border: 3px solid white;
+    border-radius: 6px;
+    margin: 0.5em;
+    padding: 1em;
+    float: left;
+    background-color: black;
+}
+
+.menu {
+    cursor: pointer;
+}
+
+.btn {
+    cursor: pointer;
+}
+
+.btn:hover {
+    color: blue;
+}
+
+.monsterimg img {
+    width: 300px;
+    margin-top: 50px;
+    border-radius: 30px;
+}
+
+.bm_play:hover {
+    cursor: pointer;
+    background-color: blue;
+}
+
+#player_status {
+    width: 100px;
+    border: 3px solid white;
+    border-radius: 6px;
+    margin: 0.5em;
+    padding: 1em;
+    float: left;
+    background-color: black;
+}
+
+
+/* 敵のダメージ時アニメーション  */
+.damage {
+    animation: damage 1s;
+}
+
+@keyframes damage {
+    10% {
+        opacity: 0.5;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    30% {
+        opacity: 0.5;
+    }
+
+    40% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    60% {
+        opacity: 1;
+    }
+
+    70% {
+        opacity: 0.5;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 0.5;
+    }
+}
+
+.enemy_attack {
+    animation: enemy_attack 1s;
+}
+
+@keyframes enemy_attack {
+    50% {
+        transform: scale(2) rotate(360deg);
+    }
+}
+
+.shock {
+    animation-name: shock 1s;
+}
+
+.next_fight {
+    position: absolute;
+    width: 625px;
+    top: 330px;
+    left: 5px;
+    color: white;
+    border: 3px solid white;
+    border-radius: 6px;
+    margin: 0.5em;
+    padding: 5em;
+    background: black;
+    text-align: center;
+}
+
+.tokugi img {
+    position: absolute;
+    top: 8px;
+    width: 800px;
+    mix-blend-mode: lighten;
+}

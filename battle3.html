@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/battle3.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="js/main.js"></script>
+    <title>ドラクエ戦闘シーン</title>
+
+</head>
+
+<body>
+    <div class="game_window">
+        <div class="game_window_container">
+            <div class="game_enemy">
+                <div class="enemy_status">
+
+                </div>
+                <div class="monsterimg"></div>
+            </div>
+
+
+            <div class="command">
+            </div>
+            <div id="player_status">
+            </div>
+            <div id="message">
+                <p class="message"></p>
+            </div>
+
+        </div>
+    </div>
+    <a class="bm_play" onclick=" battleMusic.play()">play</a>
+    <div class="fight_finish"></div>
+    <div class="tokugi"><img src="" alt=""></div>
+</body>
+
+<script>
+    // 乱数の生成ファンクション
+    function getRandom(min, max) {
+        const random = Math.floor(Math.random() * (max + 1 - min)) + min;
+        return random;
+    }
+
+    // バトル終了後のリンク
+    function window_change_field() {
+        window.location.href = "field_select.html";
+    }
+
+    // battleMusicオブジェクトの生成
+    const battleMusic = new Audio('BGM/DQVsentou.mp3');
+    const level_up_music = new Audio('BGM/level_up.mp3');
+    const enemy_atack_sound = new Audio("sound/sentou_sound/SNES-RPG02-07(Attack-Enemy).mp3");
+    const atack_sound = new Audio("sound/sentou_sound/SNES-RPG02-04(Attack-Punch).mp3");
+    const raidein_sound = new Audio("sound/sentou_sound/raidein.mp3");
+    const ionazon_sound = new Audio("sound/sentou_sound/ionazon.mp3");
+    const gigasurash_sound = new Audio("sound/sentou_sound/gigasurash.mp3");
+    const nigeru_sound = new Audio("sound/sentou_sound/nigeru.mp3");
+    const behoime_sound = new Audio("sound/sentou_sound/behoime.mp3");
+
+
+    //モンスターのオブジェクト
+    const monsters = [
+        { name: "ナス", HP: 500, image: "img/nas.JPG" },
+    ]
+
+    // 敵のパラメータのセット
+    let enemy_hp;
+    let enemy_image;
+    let monster_name;
+
+    const monster_id = Math.floor(Math.random() * monsters.length);
+    monster_name = monsters[monster_id].name;
+    enemy_hp = monsters[monster_id].HP;
+    enemy_image = monsters[monster_id].image;
+
+    $('#message').text(monster_name + 'があらわれた');
+
+    function enemy_status_set() {
+        $('.enemy_status').html(`<div class="enemy_status_container">
+    <p>${monster_name}</p>
+    <p>HP:${enemy_hp}</p>
+    </dic>
+    `);
+        $('.monsterimg').html(`<img src="${enemy_image}">`);
+    }
+    enemy_status_set();
+
+    // プレイヤーステータスのセット
+    let player_hp = 500;
+    let player_name = "ナス";
+    let player_power = 50;
+    let player_wise = 2;
+
+    function player_status_set() {
+        $('#player_status').html(`
+            <div>なまえ：${player_name}</div>
+            <div>HP：${player_hp}</div>
+            <div>ちから：${player_power}</div>
+            <div>かしこさ：${player_wise}</div> 
+            <div>Lv:23</div>       
+    `);
+    }
+
+    player_status_set();
+
+    // 敵の攻撃設定
+    let enemyAttackFunc = function () {
+        if (player_hp > 0) {
+            let enemyAttack = getRandom(30, 150);    //min~max乱数生成後代入
+            $('#message').html(`${monster_name}の攻撃!<br>ナスは${enemyAttack}のダメージをうけた!`);
+            player_hp -= enemyAttack;
+            player_status_set();
+            $(".monsterimg>img").addClass("enemy_attack");    //敵の攻撃アニメーションのCSSを付加、1秒後に除去する
+            setTimeout(function () { $(".monsterimg>img").removeClass("enemy_attack"); }, 1000);
+            enemy_atack_sound.play();
+        }
+
+        if (player_hp <= 0) {
+            player_hp = 0;
+            function sinda() {
+                $('#message').html(`${player_name}はしんでしまった`);
+                battleMusic.pause();
+            }
+            sinda();
+            player_status_set();
+            function maketa() {
+                $('.fight_finish').html
+                    (`${player_name}はしんでしまった。。。<br>
+            もういちどやりなおしますか？<br><br>
+            <div class="menu"><span onclick="window_change_field()">はい</span> or <span>いいえ</span></div>
+            `);
+                $(".fight_finish").addClass("next_fight");
+            }
+            maketa();
+        }
+    }
+
+    // 戦闘or逃げる 戦うBGMとコマンドをセット
+    $('.command').html
+        (`
+            <div  onclick="command_reset(),battleMusic.play()" class="menu">たたかう</div>
+            <br>
+            <div  onclick="escape()" class="menu">にげる</div>
+            `);
+
+    // コマンドオプション
+    function command_reset() {
+        $('.command').html
+            (`
+            <div id="menu1" onclick="attack();" class="menu">こうげき</div>
+            <div id="menu2" onclick="defend();" class="menu">ぼうぎょ</div>
+            <div id="menu3" onclick="item();" class="menu">どうぐ</div>
+            <div id="menu4" onclick="tokugi()" class="menu">とくぎ</div>
+            <div id="menu5" onclick="escape();" class="menu">にげる</div>
+            `);
+    }
+
+    function attack() {
+        if (enemy_hp > 0) {
+            let attack = getRandom(20, 30);
+            atack_sound.play();
+            $('#message').html(`${player_name}のこうげき！<br>${monster_name}は${attack}のダメージ！`);
+            enemy_hp -= attack;
+            enemy_status_set();
+            $(".monsterimg>img").addClass("damage");    //ダメージアニメーションのCSSを付加、1秒後に除去する
+            setTimeout(function () { $(".monsterimg>img").removeClass("damage"); }, 1000);
+        }
+        enemy_die_check()
+    }
+
+    // 敵のHPが０以下になったかチェック
+    function enemy_die_check() {
+        if (enemy_hp <= 0) {
+            enemy_hp = 0;
+            enemy_status_set()
+            battleMusic.pause();
+            level_up_music.play();
+            $('#message').html(`${monster_name}をやっつけた!`);
+            function tugino_tatakai() {
+                $('.fight_finish').html
+                    (`${monster_name}をやっつけた!<br><br>つづけてたたかいますか？<br>
+            <div class="menu"><a onclick="window_change_field()">はい</a> or <a>いいえ</a></div>
+            `);
+                $(".fight_finish").addClass("next_fight");
+            }
+            setTimeout(tugino_tatakai, 3000);
+        } else {
+            setTimeout(enemyAttackFunc, 2000);       //モンスターのHPが0でなければ相手の攻撃を実行する
+        }
+    }
+
+
+    function defend() {
+        $('#message').text('みをまもっている');
+        let defend_and_attack = function defend_m() {
+            $('#message').html(`${monster_name}のこうげき!<br>しかしきかなかった`);
+            let enemy_atack_sound = new Audio("../sound/sentou_sound/SNES-RPG02-07(Attack-Enemy).mp3");
+            enemy_atack_sound.play();
+        }
+        setTimeout(defend_and_attack, 2000);
+    }
+
+    function item() {
+        $('#message').text('どうぐをえらぶ');
+        $('.command').html(`
+            <div id="item_1" onclick="yakusou()" class="menu">やくそう</div>
+            <div id="item_2" onclick="github()" class="menu">ぎっとはぶ</div>
+            <div id="item_3" onclick="tweet()" class="menu">ついーと</div>
+            <div id="item_4" onclick="yameru()" class="menu">やめる</div>
+       ` );
+    }
+
+    // アイテムのオプション
+    function github() {
+        $('#message').text(`${player_name}はデプロイした`);
+        setTimeout(enemyAttackFunc, 2000);
+        command_reset();
+    }
+
+    function yakusou() {
+        $('#message').html(`${player_name}はやくそうをつかった<br>HPが40かいふくした`);
+        player_hp += 40;
+        player_status_set();
+        setTimeout(enemyAttackFunc, 2000);
+        command_reset();
+    }
+
+    function tweet() {
+        $('#message').html(`${player_name}はついったーにとうこうしている`);
+        setTimeout(enemyAttackFunc, 2000);
+        command_reset();
+    }
+
+
+    // 逃げる
+    function escape() {
+        nigeru_sound.play();
+        $('#message').text('しかしまわりこまれた');
+        setTimeout(enemyAttackFunc, 2000);
+    }
+
+    // 止める（コマンドリセット）
+    function yameru() {
+        command_reset();
+        $('#message').text('どうしますか');
+    }
+
+
+    function tokugi() {
+        $('.command').html(`
+            <div onclick="raidein()" class="menu">ライデイン</div>
+            <div onclick="ionazon()" class="menu">イオナズン</div>
+            <div onclick="gigasurash()" class="menu">ギガスラッシュ</div>
+            <div onclick="behoime()" class="menu">ベホイミ</div>
+            <div onclick="yameru()" class="menu">やめる</div>
+       ` );
+    }
+
+    function behoime() {
+        $('#message').html(`${player_name}はベホイミをとなえた<br>HPが90かいふくした`);
+        behoime_sound.play();
+        player_hp += 90;
+        player_status_set();
+        setTimeout(enemyAttackFunc, 2000);
+        command_reset();
+    }
+
+    // ライデイン
+    function raidein() {
+        if (enemy_hp > 0) {
+            let attack = getRandom(50, 70);
+            raidein_on();
+            setTimeout(raidein_off, 1000);
+            $('#message').html(`${player_name}はライデインをはなった！<br>${monster_name}は${attack}のダメージ！`);
+            enemy_hp -= attack;
+            enemy_status_set();
+            $(".monsterimg>img").addClass("damage");   //ダメージアニメーションのCSSを付加、1秒後に除去する
+            setTimeout(function () { $(".monsterimg>img").removeClass("damage"); }, 2000);
+        }
+        command_reset();
+        enemy_die_check();
+    }
+
+    function raidein_on() {
+        $('.tokugi').children('img').attr('src', 'gif/raidein.gif');
+        raidein_sound.play();
+    }
+    function raidein_off() {
+        $('.tokugi').children('img').attr('src', '');
+        raidein_sound.pause();
+    }
+
+    //イオナズン
+    function ionazon() {
+        if (enemy_hp > 0) {
+            let attack = getRandom(50, 70);
+            ionazon_on();
+            setTimeout(ionazon_off, 1000);
+            $('#message').html(`${player_name}はイオナズンをはなった！<br>${monster_name}は${attack}のダメージ！`);
+            enemy_hp -= attack;
+            enemy_status_set();
+            $(".monsterimg>img").addClass("damage");   //ダメージアニメーションのCSSを付加、1秒後に除去する
+            setTimeout(function () { $(".monsterimg>img").removeClass("damage"); }, 2000);
+        }
+        command_reset();
+        enemy_die_check();
+    }
+
+    function ionazon_on() {
+        $('.tokugi').children('img').attr('src', 'gif/ionazon.gif');
+        ionazon_sound.play();
+    }
+    function ionazon_off() {
+        $('.tokugi').children('img').attr('src', '');
+        ionazon_sound.pause();
+    }
+
+    function gigasurash() {
+        if (enemy_hp > 0) {
+            let attack = getRandom(50, 70);
+            gigasurash_on();
+            setTimeout(gigasurash_off, 1000);
+            $('#message').html(`${player_name}はギガスラッシュをはなった！<br>${monster_name}は${attack}のダメージ！`);
+            enemy_hp -= attack;
+            enemy_status_set();
+            $(".monsterimg>img").addClass("damage");   //ダメージアニメーションのCSSを付加、1秒後に除去する
+            setTimeout(function () { $(".monsterimg>img").removeClass("damage"); }, 2000);
+        }
+        command_reset();
+        enemy_die_check();
+    }
+
+    function gigasurash_on() {
+        $('.tokugi').children('img').attr('src', 'gif/gigasurash.gif');
+        gigasurash_sound.play();
+    }
+    function gigasurash_off() {
+        $('.tokugi').children('img').attr('src', '');
+        gigasurash_sound.pause();
+    }
+
+</script>
+</body>
+
+</html>

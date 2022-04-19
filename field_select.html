@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="css/field_select.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>フィールド選択</title>
+</head>
+
+<body onload="BGM.play()">
+    <div class="game_window">
+        <div class="title-wrapper">
+            <h1>フィールドをえらんでください</h1>
+        </div>
+
+        <div class="field_img_wrapper">
+            <div class="field_img_container" onclick="setTimeout(field_change_01, 2000),kaidan_sound.play()">
+                <img src="img/sougen.png" alt="草原">
+                <p>草原</p>
+            </div>
+            <div class="field_img_container" onclick="setTimeout(field_change_02, 2000),kaidan_sound.play()">
+                <img src="img/doukutsu.png" alt="洞窟">
+                <p>洞窟</p>
+            </div>
+            <div class="field_img_container" onclick="setTimeout(field_change_03, 2000),kaidan_sound.play()">
+                <img src="img/hikaruyuka.png" alt="光る部屋">
+                <p>光る部屋</p>
+            </div>
+        </div>
+    </div>
+
+    <a class="BGM" onclick="BGM.play();">play</a>
+
+    <script>
+        function field_change_01() {
+            window.location.href = "battle1.html";
+        }
+        function field_change_02() {
+            window.location.href = "battle2.html";
+        }
+        function field_change_03() {
+            window.location.href = "battle3.html";
+        }
+
+        const BGM = new Audio("BGM/DQ5BGM.mp3");
+        const kaidan_sound = new Audio("sound/kaidan.wav");
+
+    </script>
+</body>
+
+</html>
